@@ -97,14 +97,8 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: clj-watson (Clojure)
-        uses: clj-holmes/clj-watson-action@main
-        with:
-          clj-watson-sha: "65d928c"
-          clj-watson-tag: "v4.0.1"
-          database-strategy: github-advisory
-          deps-edn-path: 'deps.edn'
-          suggest-fix: 'true'
-          fail-on-result: 'true'
+        run: | 
+          clojure -Tclj-watson scan '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "github-advisory"}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
