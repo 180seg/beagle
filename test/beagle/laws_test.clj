@@ -1,7 +1,7 @@
 (ns beagle.laws-test
   (:require
    [beagle.laws :as laws]
-   [clojure.test :refer :all]))
+   [clojure.test :refer [deftest is testing]]))
 
 (deftest ->simulate-custom-policy
   (testing "when valid laws are provided."

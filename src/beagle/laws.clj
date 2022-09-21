@@ -11,6 +11,7 @@
                   (update :ResourceArns concat (:Resource statement))))
             simulate-custom-policy-request statements)))
 
+#_{:clj-kondo/ignore [:redefined-var]}
 (defn read [path]
   (->> path
        io/file
