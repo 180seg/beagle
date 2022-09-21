@@ -98,6 +98,7 @@ jobs:
 
       - name: clj-watson (Clojure)
         run: | 
+          clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v4.0.1" :git/sha "65d928c"}' :as clj-watson
           clojure -Tclj-watson scan '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "github-advisory"}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
