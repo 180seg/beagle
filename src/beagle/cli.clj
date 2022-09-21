@@ -15,7 +15,7 @@
                              {:option   "laws" :short "l"
                               :type     :string
                               :as       "Path containing all the laws that a policy can not break."}]
-               :runs        engine/main}]})
+               :runs        engine/cli}]})
 
 (defn -main [& args]
   (climatic/run-cmd args CONFIGURATION))
