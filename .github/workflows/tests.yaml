@@ -55,7 +55,7 @@ jobs:
       - name: Install clojure tools-deps
         uses: DeLaGuardo/setup-clojure@master
         with:
-          tools-deps: 1.10.3.1093
+          cli: 1.10.3.1093
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -69,3 +69,49 @@ jobs:
           clojure -M:clojure-lsp format --dry
           clojure -M:clojure-lsp clean-ns --dry
           clojure -M:clojure-lsp diagnostics
+
+  security:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare java
+        uses: actions/setup-java@v2.5.0
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Install clojure tools-deps
+        uses: DeLaGuardo/setup-clojure@master
+        with:
+          cli: 1.10.3.1058
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2.1.7
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/deps.edn') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: clj-watson (Clojure)
+        uses: clj-holmes/clj-watson-action@main
+        with:
+          clj-watson-sha: "65d928c"
+          clj-watson-tag: "v4.0.1"
+          database-strategy: github-advisory
+          deps-edn-path: 'deps.edn'
+          output-type: 'edn'
+          suggest-fix: 'true'
+          fail-on-result: 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: clj-holmes (Clojure)
+        uses: clj-holmes/clj-holmes-action@main
+        with:
+          output-type: 'stdout'
+          fail-on-result: 'true'
+          verbose: 'false'
