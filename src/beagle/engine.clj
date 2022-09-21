@@ -6,8 +6,8 @@
    [cognitect.aws.client.api :as aws]))
 
 (defn may-i-trust-those-policies? [user-policies laws iam-client]
-  (let [simulate-custom-policy-request (-> laws 
-                                           beagle.laws/->simulate-custom-policy 
+  (let [simulate-custom-policy-request (-> laws
+                                           beagle.laws/->simulate-custom-policy
                                            (assoc :PolicyInputList user-policies))
         simulate-custom-policy-response (aws/invoke iam-client {:op :SimulateCustomPolicy :request simulate-custom-policy-request})
         broken-laws (->> simulate-custom-policy-response

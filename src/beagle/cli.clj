@@ -1,6 +1,7 @@
 (ns beagle.cli
-  (:require [cli-matic.core :as climatic]
-            [beagle.engine :as engine]))
+  (:require
+   [beagle.engine :as engine]
+   [cli-matic.core :as climatic]))
 
 (def CONFIGURATION
   {:app      {:command     "beagle"

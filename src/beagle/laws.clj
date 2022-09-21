@@ -1,4 +1,4 @@
-(ns beagle.laws 
+(ns beagle.laws
   (:require
    [clojure.data.json :as json]
    [clojure.java.io :as io]))

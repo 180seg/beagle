@@ -5,7 +5,7 @@
         cli-matic              {:git/url "https://github.com/l3nz/cli-matic.git" 
                                 :sha "374b2ad71843c07b9d2ddfc1d4439bd7f8ebafab"}}
  :aliases 
- {:clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2021.12.20-00.36.56"}}
+ {:clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2022.05.23-13.18.11"}}
                 :main-opts ["-m" "clojure-lsp.main"]}
 
   :test        {:extra-paths ["test"]
