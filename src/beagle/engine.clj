@@ -1,9 +1,9 @@
 (ns beagle.engine
   (:require
-   [beagle.laws :as beagle.laws]
-   [beagle.policies :as beagle.policies]
-   [clojure.pprint :as pprint]
-   [cognitect.aws.client.api :as aws]))
+    [beagle.laws :as beagle.laws]
+    [beagle.policies :as beagle.policies]
+    [clojure.pprint :as pprint]
+    [cognitect.aws.client.api :as aws]))
 
 (defn may-i-trust-those-policies? [user-policies laws iam-client]
   (let [simulate-custom-policy-request (-> laws
@@ -21,11 +21,10 @@
           laws (beagle.laws/read laws)
           iam-client (aws/client {:api :iam})
           {:keys [status broken-laws]} (may-i-trust-those-policies? user-policies laws iam-client)]
-      (if status
-        (println "The provided policies are worth my trust.")
-        (do
-          (println "The provided policies are breaking my laws.")
-          (println "Broken laws")
-          (run! pprint/pprint broken-laws)
-          (System/exit 1))))
+      (when (not status)
+        (println "The provided policies are breaking my laws.")
+        (println "Broken laws")
+        (run! pprint/pprint broken-laws)
+        (System/exit 1))
+      (println "The provided policies are worth my trust."))
     (println "You need to provide at least one policy and one directory with laws.")))
