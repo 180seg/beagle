@@ -1,6 +1,7 @@
 # Beagle
 Beagle is an AWS policy judge (decision maker).
-![image](https://user-images.githubusercontent.com/12648924/191527413-ac88cba4-cfaf-4cd0-a311-29cd68800a10.png)
+
+![beagle](https://user-images.githubusercontent.com/12648924/191837038-3eae3148-191e-4658-baa1-a0011b76e740.png)
 
 Beagle acts like a decision maker being usefull in places where you need to evaluate if an AWS policy is to permissive, give access to sensitive data, give destructive permissions among other use cases.
 
