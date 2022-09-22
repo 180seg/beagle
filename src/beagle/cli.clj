@@ -1,6 +1,7 @@
 (ns beagle.cli
-  (:require [cli-matic.core :as climatic]
-            [beagle.engine :as engine]))
+  (:require
+   [beagle.engine :as engine]
+   [cli-matic.core :as climatic]))
 
 (def CONFIGURATION
   {:app      {:command     "beagle"
@@ -15,7 +16,7 @@
                              {:option   "laws" :short "l"
                               :type     :string
                               :as       "Path containing all the laws that a policy can not break."}]
-               :runs        engine/main}]})
+               :runs        engine/cli}]})
 
 (defn -main [& args]
   (climatic/run-cmd args CONFIGURATION))

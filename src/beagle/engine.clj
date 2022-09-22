@@ -1,46 +1,30 @@
 (ns beagle.engine
-  (:require [cognitect.aws.client.api :as aws]
-            [clojure.data.json :as json] [clojure.java.io :as io]))
+  (:require
+   [beagle.laws :as beagle.laws]
+   [beagle.policies :as beagle.policies]
+   [clojure.pprint :as pprint]
+   [cognitect.aws.client.api :as aws]))
 
-(def iam (aws/client {:api :iam}))
+(defn may-i-trust-those-policies? [user-policies laws iam-client]
+  (let [simulate-custom-policy-request (-> laws
+                                           beagle.laws/->simulate-custom-policy
+                                           (assoc :PolicyInputList user-policies))
+        simulate-custom-policy-response (aws/invoke iam-client {:op :SimulateCustomPolicy :request simulate-custom-policy-request})
+        broken-laws (->> simulate-custom-policy-response
+                         :EvaluationResults
+                         (filter #(not= (:EvalDecision %) "implicitDeny")))]
+    {:status (empty? broken-laws) :broken-laws broken-laws}))
 
-(defn read-laws [path]
-  (->> path
-       io/file
-       file-seq
-       (filter #(.isFile %))
-       (map (comp #(json/read-str % :key-fn keyword) slurp))))
-
-(defn read-policies [policy]
-  (map slurp policy))
-
-(defn parse-forbidden-policy [simulate-custom-policy-request policy]
-  (let [statements (:Statement policy)]
-    (reduce (fn [simulate-custom-policy-request statement]
-              (-> simulate-custom-policy-request
-                  (update :ActionNames concat (:Action statement))
-                  (update :ResourceArns concat (:Resource statement))))
-            simulate-custom-policy-request statements)))
-
-(defn parse-forbidden-policies [policies]
-  (reduce parse-forbidden-policy {:ActionNames [] :ResourceArns []} policies))
-
-(defn may-i-trust-this-policy? [simulate-custom-policy-request user-policies]
-  (let [iam-request {:op :SimulateCustomPolicy :request (assoc simulate-custom-policy-request :PolicyInputList user-policies)}]
-    (->> iam-request
-         (aws/invoke iam)
-         :EvaluationResults
-         (filter #(not= (:EvalDecision %) "implicitDeny"))
-         empty?)))
-
-(defn main [{:keys [policy laws]}]
+(defn cli [{:keys [policy laws]}]
   (if (and policy laws)
-    (let [user-policies (read-policies policy)
-          forbidden-policies (read-laws laws)
-          simulate-custom-policy-request (parse-forbidden-policies forbidden-policies)]
-      (if (may-i-trust-this-policy? simulate-custom-policy-request user-policies)
-        (println "You can trust in it.")
-        (do
-          (println "You can not trust in it.")
-          (System/exit 1))))
+    (let [user-policies (beagle.policies/read policy)
+          laws (beagle.laws/read laws)
+          iam-client (aws/client {:api :iam})
+          {:keys [status broken-laws]} (may-i-trust-those-policies? user-policies laws iam-client)]
+      (when (not status)
+        (println "The provided policies are breaking my laws.")
+        (println "Broken laws")
+        (run! pprint/pprint broken-laws)
+        (System/exit 1))
+      (println "The provided policies are worth my trust."))
     (println "You need to provide at least one policy and one directory with laws.")))

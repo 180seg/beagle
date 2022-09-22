@@ -1,13 +1,16 @@
 # Beagle
-Beagle is an AWS policy judge.
+Beagle is an AWS policy judge (decision maker).
 ![image](https://user-images.githubusercontent.com/12648924/191527413-ac88cba4-cfaf-4cd0-a311-29cd68800a10.png)
 
-Based on a list of [forbidden actions](resources/forbidden-actions) which are basically policy laws he will evaluate your policy to identify if it's not breaking any of them.
+Beagle acts like a decision maker being usefull in places where you need to evaluate if an AWS policy is to permissive, give access to sensitive data, give destructive permissions among other use cases.
+
+To do that you need provide a set of laws to beagle and one or more policies, then he will check if your policies are breaking any laws.
 
 # Concepts
 Beagle is really simple and relies on two simple concepts.
+
 ## Laws
-Set of aws policies containg actions and resources that an entity is not allowed to perform
+Set of aws policies containg the actions you do not allow to be gave. 
 
 ## Policies
 One or more policies that are going to be judge by the defined laws.
