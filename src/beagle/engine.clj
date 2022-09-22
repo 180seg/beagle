@@ -1,9 +1,9 @@
 (ns beagle.engine
   (:require
-    [beagle.laws :as beagle.laws]
-    [beagle.policies :as beagle.policies]
-    [clojure.pprint :as pprint]
-    [cognitect.aws.client.api :as aws]))
+   [beagle.laws :as beagle.laws]
+   [beagle.policies :as beagle.policies]
+   [clojure.pprint :as pprint]
+   [cognitect.aws.client.api :as aws]))
 
 (defn may-i-trust-those-policies? [user-policies laws iam-client]
   (let [simulate-custom-policy-request (-> laws
